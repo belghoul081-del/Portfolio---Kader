@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Circuit Board Portfolio Background</title>
+    <style>
+        :root {
+            --bg-cyan: #050508;
+            --navy: #C5A059;
+            --navy-soft: #fdae10;
+            --orange: #FF6D00;
+            --red: #e2263a;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--bg-cyan);
+            overflow-x: hidden;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+
+        /* ---------- BACKGROUND LAYER (fixed, behind everything) ---------- */
+        .circuit-wrap {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            background: var(--bg-cyan);
+            overflow: hidden;
+        }
+
+        .circuit-bg {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        /* Glassmorphism overlay sitting above the raw SVG but below page content */
+        .glass-layer {
+            position: fixed;
+            inset: 0;
+            z-index: 1;
+            background: rgba(7, 13, 26, 0.7);
+            backdrop-filter: blur(1px);
+            -webkit-backdrop-filter: blur(1px);
+            border-top: 1px solid rgba(255, 255, 255, 0.3);
+            pointer-events: none;
+        }
+
+        /* ---------- Board base shapes ---------- */
+        .board-bg {
+            fill: var(--bg-cyan);
+        }
+
+        .board-border {
+            fill: none;
+            stroke: var(--navy);
+            stroke-opacity: 0.15;
+            stroke-width: 2;
+        }
+
+        /* Chips / CPUs -> visible navy */
+        .chip-core {
+            fill: var(--navy);
+            stroke: var(--navy-soft);
+            stroke-width: 1.2;
+            opacity: 0.92;
+        }
+
+        .chip-small {
+            fill: var(--navy);
+            stroke: var(--navy-soft);
+            stroke-width: 0.8;
+            opacity: 0.85;
+        }
+
+        .chip-strip {
+            fill: var(--navy-soft);
+            opacity: 0.8;
+        }
+
+        /* Decorative pictogram fills + dense grid dots -> essentially hidden but kept in DOM */
+        .decor-icon {
+            fill: var(--navy);
+            opacity: 0.045;
+        }
+
+        .circuit-hidden {
+            fill: none;
+            stroke: var(--navy);
+            stroke-width: 0.6;
+            opacity: 0.5;
+        }
+
+        /* Main circuit paths (feeding the CPU) -> visible navy traces */
+        .circuit-path {
+            fill: none;
+            stroke: var(--navy);
+            stroke-width: 1.1;
+            stroke-linecap: round;
+            transition: stroke 0.15s linear;
+        }
+
+        .circuit-path.main-path {
+            stroke-opacity: 0.8;
+            stroke-width: 1.3;
+        }
+
+        /* Secondary paths -> nearly invisible base state, kept for JS pulses */
+        .circuit-path.secondary-path {
+            stroke-opacity: 0.2;
+            stroke-width: 1;
+        }
+
+        /* Circular indicator rings -> visible navy w/ faint glow, orange center pulse capable */
+        .circle-glow-ring,
+        .circle-glow-ring2,
+        .circle-glow-ring3 {
+            fill: none;
+            stroke: var(--navy);
+            stroke-width: 1.4;
+
+        }
+
+        .circle-glow-dot,
+        .circle-glow-dot2,
+        .circle-glow-dot3 {
+            fill: var(--orange);
+            opacity: 0.85;
+            filter: drop-shadow(0 0 4px var(--orange));
+        }
+
+        /* ---------- Pulse elements injected by JS ---------- */
+        .pulse-line {
+            fill: none;
+            stroke-linecap: round;
+            pointer-events: none;
+        }
+
+        .pulse-spark {
+            pointer-events: none;
+        }
+
+        /* ---------- Page content sits above everything ---------- */
+        .page-content {
+            position: relative;
+            z-index: 2;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            color: var(--navy);
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .page-content h1 {
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            margin: 0 0 .5rem;
+            letter-spacing: 0.5px;
+        }
+
+        .page-content p {
+            font-size: 1.1rem;
+            max-width: 560px;
+            opacity: 0.8;
+            margin: 0;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="circuit-wrap">
+        <svg id="circuitSvg" class="circuit-bg" viewBox="0 0 677.33333 380.99999" xmlns="http://www.w3.org/2000/svg"
+            preserveAspectRatio="xMidYMid slice">
+            <defs>
+                <marker id="ColoredDot" refX="-2.3438678" refY="-0.25142527" orient="auto" markerWidth="1"
+                    markerHeight="1" viewBox="0 0 1 1" preserveAspectRatio="xMidYMid" markerUnits="strokeWidth"
+                    style="overflow:visible">
+                    <path transform="scale(0.45)"
+                        style="fill:context-fill;fill-rule:evenodd;stroke:context-stroke;stroke-width:2"
+                        d="M 5,0 C 5,2.76 2.76,5 0,5 -2.76,5 -5,2.76 -5,0 c 0,-2.76 2.3,-5 5,-5 2.76,0 5,2.24 5,5 z" />
+                </marker>
+                <marker id="marker13" refX="0" refY="0" orient="auto" markerWidth="1" markerHeight="1" viewBox="0 0 1 1"
+                    preserveAspectRatio="xMidYMid" style="overflow:visible">
+                    <path transform="scale(0.5)" style="fill:context-stroke;fill-rule:evenodd;stroke:none"
+                        d="M 5,0 C 5,2.76 2.76,5 0,5 -2.76,5 -5,2.76 -5,0 c 0,-2.76 2.3,-5 5,-5 2.76,0 5,2.24 5,5 z" />
+                </marker>
+                <marker id="marker8" refX="0" refY="0" orient="auto" markerWidth="1" markerHeight="1" viewBox="0 0 1 1"
+                    preserveAspectRatio="xMidYMid" style="overflow:visible">
+                    <path transform="scale(0.5)" style="fill:context-stroke;fill-rule:evenodd;stroke:none"
+                        d="M 5,0 C 5,2.76 2.76,5 0,5 -2.76,5 -5,2.76 -5,0 c 0,-2.76 2.3,-5 5,-5 2.76,0 5,2.24 5,5 z" />
+                </marker>
+                <marker id="marker9" refX="0" refY="0" orient="auto" markerWidth="1" markerHeight="1" viewBox="0 0 1 1"
+                    preserveAspectRatio="xMidYMid" style="overflow:visible">
+                    <path transform="scale(0.5)" style="fill:context-stroke;fill-rule:evenodd;stroke:none"
+                        d="M 5,0 C 5,2.76 2.76,5 0,5 -2.76,5 -5,2.76 -5,0 c 0,-2.76 2.3,-5 5,-5 2.76,0 5,2.24 5,5 z" />
+                </marker>
+                <marker id="marker13-1" refX="0" refY="0" orient="auto" markerWidth="1" markerHeight="1"
+                    viewBox="0 0 1 1" preserveAspectRatio="xMidYMid" style="overflow:visible">
+                    <path transform="scale(0.5)" style="fill:context-stroke;fill-rule:evenodd;stroke:none"
+                        d="M 5,0 C 5,2.76 2.76,5 0,5 -2.76,5 -5,2.76 -5,0 c 0,-2.76 2.3,-5 5,-5 2.76,0 5,2.24 5,5 z" />
+                </marker>
+                <marker id="marker14" refX="3" refY="0" orient="auto" markerWidth="1" markerHeight="1" viewBox="0 0 1 1"
+                    preserveAspectRatio="xMidYMid" markerUnits="strokeWidth" style="overflow:visible">
+                    <path transform="scale(0.45)"
+                        style="fill:context-fill;fill-rule:evenodd;stroke:context-stroke;stroke-width:2"
+                        d="M 5,0 C 5,2.76 2.76,5 0,5 -2.76,5 -5,2.76 -5,0 c 0,-2.76 2.3,-5 5,-5 2.76,0 5,2.24 5,5 z" />
+                </marker>
+                <marker id="marker15" refX="0" refY="0" orient="auto" markerWidth="1" markerHeight="1" viewBox="0 0 1 1"
+                    preserveAspectRatio="xMidYMid" style="overflow:visible">
+                    <path transform="scale(0.5)" style="fill:context-stroke;fill-rule:evenodd;stroke:none"
+                        d="M 5,0 C 5,2.76 2.76,5 0,5 -2.76,5 -5,2.76 -5,0 c 0,-2.76 2.3,-5 5,-5 2.76,0 5,2.24 5,5 z" />
+                </marker>
+                <marker id="ThreeDots" orient="auto-start-reverse" refY="0" refX="0" markerWidth="1" markerHeight="1"
+                    viewBox="0 0 1 1" preserveAspectRatio="xMidYMid" style="overflow:visible">
+                    <g transform="scale(0.5)">
+                        <circle cx="4" cy="0" r="1" style="fill:context-stroke;stroke:context-stroke" />
+                        <circle cx="8" cy="0" r="1" style="fill:context-stroke;stroke:context-stroke" />
+                        <circle cx="12" cy="0" r="1" style="fill:context-stroke;stroke:context-stroke" />
+                    </g>
+                </marker>
+                <marker id="SemiCircleFilled" refX="0" refY="0" orient="auto" markerWidth="1" markerHeight="1"
+                    viewBox="0 0 1 1" preserveAspectRatio="xMidYMid" style="overflow:visible">
+                    <path style="fill:context-stroke;fill-rule:evenodd;stroke:context-stroke;stroke-width:0.6pt"
+                        d="m -0.22470421,-0.02741555 c 0,1.65599995 1.34400001,2.99999995 3.00000001,2.99999995 v -6 c -1.656,0 -3.00000001,1.344 -3.00000001,3.00000005 z" />
+                </marker>
+                <marker id="ThreeDots-1" orient="auto-start-reverse" refY="0" refX="0" markerWidth="1" markerHeight="1"
+                    viewBox="0 0 1 1" preserveAspectRatio="xMidYMid" style="overflow:visible">
+                    <g transform="scale(0.5)">
+                        <circle cx="4" cy="0" r="1" style="fill:context-stroke;stroke:context-stroke" />
+                        <circle cx="8" cy="0" r="1" style="fill:context-stroke;stroke:context-stroke" />
+                        <circle cx="12" cy="0" r="1" style="fill:context-stroke;stroke:context-stroke" />
+                    </g>
+                </marker>
+                <marker id="SemiCircleFilled-2" refX="0" refY="0" orient="auto" markerWidth="1" markerHeight="1"
+                    viewBox="0 0 1 1" preserveAspectRatio="xMidYMid" style="overflow:visible">
+                    <path style="fill:context-stroke;fill-rule:evenodd;stroke:context-stroke;stroke-width:0.6pt"
+                        d="m -0.22470421,-0.02741555 c 0,1.65599995 1.34400001,2.99999995 3.00000001,2.99999995 v -6 c -1.656,0 -3.00000001,1.344 -3.00000001,3.00000005 z" />
+                </marker>
+                <marker id="ThreeDots-4" orient="auto-start-reverse" refY="0" refX="0" markerWidth="1" markerHeight="1"
+                    viewBox="0 0 1 1" preserveAspectRatio="xMidYMid" style="overflow:visible">
+                    <g transform="scale(0.5)">
+                        <circle cx="4" cy="0" r="1" style="fill:context-stroke;stroke:context-stroke" />
+                        <circle cx="8" cy="0" r="1" style="fill:context-stroke;stroke:context-stroke" />
+                        <circle cx="12" cy="0" r="1" style="fill:context-stroke;stroke:context-stroke" />
+                    </g>
+                </marker>
+                <marker id="SemiCircleFilled-8" refX="0" refY="0" orient="auto" markerWidth="1" markerHeight="1"
+                    viewBox="0 0 1 1" preserveAspectRatio="xMidYMid" style="overflow:visible">
+                    <path style="fill:context-stroke;fill-rule:evenodd;stroke:context-stroke;stroke-width:0.6pt"
+                        d="m -0.22470421,-0.02741555 c 0,1.65599995 1.34400001,2.99999995 3.00000001,2.99999995 v -6 c -1.656,0 -3.00000001,1.344 -3.00000001,3.00000005 z" />
+                </marker>
+            </defs>
+            <g id="layer1">
+                <rect id="rect4" class="board-border" width="761.12567" height="440.02582" x="-47.570354" y="-47.570354"
+                    ry="4.6678562" />
+                <rect id="rect5" class="board-bg" width="677.33331" height="381" x="0" y="0" ry="0" />
+
+                <rect id="rect1" class="chip-core" width="105.83334" height="105.83334" x="451.83951" y="200.96527"
+                    ry="9.0894632" />
+                <rect id="rect5-1" class="chip-core" width="92.604164" height="92.604164" x="458.62051" y="207.48785"
+                    ry="7.95328" />
+                <rect id="rect1-8" class="chip-core" width="66.145836" height="66.145836" x="470.58939" y="222.62231"
+                    ry="0" />
+
+                <path class="circuit-path main-path" id="path41"
+                    d="m 384.72372,96.050485 -0.0561,-8.528823 h 116.59952 l -0.74741,21.739388 -35.01995,36.17593 v 47.22814"
+                    marker-start="url(#ColoredDot)" marker-end="url(#marker13)" />
+                <path class="circuit-path main-path" id="path12-6"
+                    d="m 372.69809,100.43811 -0.0564,-26.122738 142.33575,-0.224559 -1.22857,35.170237 -35.01995,36.17593 v 47.22814"
+                    marker-end="url(#marker13)" />
+                <path class="circuit-path main-path" id="path12-6-9" d="m 505.18728,145.43698 -10e-6,47.22814"
+                    marker-start="url(#ColoredDot)" marker-end="url(#marker13)" />
+                <path class="circuit-path main-path" id="path12-6-9-9"
+                    d="m 80.776585,165.56487 30.524265,0.56734 0.7236,-92.660783 64.88203,-44.208353 378.92008,1.887546 -0.74011,85.82984 -23.44084,28.45652 v 47.22814"
+                    marker-start="url(#marker13)" marker-end="url(#marker13)" />
+                <path class="circuit-path main-path" id="path12-6-9-9-2"
+                    d="m 80.776585,152.3357 16.849739,0.33363 0.57235,-82.125501 78.707186,-54.514343 392.16097,1.89197 -0.75121,99.059004 -23.44084,28.45652 -10e-6,47.22814"
+                    marker-start="url(#marker13)" marker-end="url(#marker13)" />
+                <path class="circuit-path main-path" id="path12-6-9-9-0"
+                    d="m 80.776585,178.79403 43.990165,0.25265 2.40129,-106.140035 49.73909,-30.409731 365.69997,1.882872 -0.74981,72.600674 -23.44084,28.45652 v 47.22814"
+                    marker-start="url(#marker13)" marker-end="url(#marker13)" />
+                <path class="circuit-path main-path" id="path12-6-9-9-0-4"
+                    d="m 80.756495,196.08275 58.669325,0.30271 3.34751,-115.004305 33.16723,-20.553414 352.28182,0.158453 -1.24427,48.274856 -35.01995,36.17593 v 47.22814"
+                    marker-start="url(#marker13)" marker-end="url(#marker13)" />
+                <path class="circuit-path main-path" id="path12-60"
+                    d="m 381.34902,340.38885 84.79995,-0.33625 v -24.52754" marker-start="url(#ColoredDot)"
+                    marker-end="url(#marker13-1)" />
+                <path class="circuit-path main-path" id="path12-6-7"
+                    d="m 506.14245,348.15476 -26.76428,0.25609 v -32.88579" marker-start="url(#ColoredDot)"
+                    marker-end="url(#marker13-1)" />
+                <path class="circuit-path main-path" id="path12-6-9-1"
+                    d="m 519.09869,339.51131 -13.26221,0.0588 -10e-6,-24.04508" marker-end="url(#marker13-1)" />
+                <path class="circuit-path main-path" id="path12-6-9-9-7"
+                    d="m 371.26074,356.94858 139.56642,-0.21079 21.46765,-17.65011 v -23.56262"
+                    marker-start="url(#ColoredDot)" marker-end="url(#marker13-1)" />
+                <path class="circuit-path main-path" id="path12-6-9-9-2-7"
+                    d="m 370.67323,365.64797 144.16855,-0.30557 30.68219,-26.25472 v -23.56262"
+                    marker-start="url(#ColoredDot)" marker-end="url(#marker13-1)" />
+                <path class="circuit-path main-path" id="path12-6-9-9-0-7" d="m 519.10098,339.52698 -0.16326,-24.30043"
+                    marker-end="url(#marker13-1)" />
+                <path class="circuit-path main-path" id="path12-6-9-9-0-4-7" d="M 492.60736,340.0526 V 315.52506"
+                    marker-start="url(#ColoredDot)" marker-end="url(#marker13-1)" />
+
+                <rect id="rect2" class="chip-small" width="52.916664" height="26.458332" x="352.59921" y="101.23856"
+                    ry="9.0894632" />
+                <rect id="rect2-3" class="chip-small" width="27.175133" height="13.587566" x="625.23157" y="87.136108"
+                    ry="4.6678562" />
+                <rect id="rect3" class="chip-strip" width="26.458332" height="5.2916665" x="625.57263" y="192.40051"
+                    ry="2.3880703" />
+                <rect id="rect3-8" class="chip-strip" width="26.458332" height="5.2916665" x="625.57263" y="218.85884"
+                    ry="2.3880703" />
+                <rect id="rect3-8-2" class="chip-strip" width="26.458332" height="5.2916665" x="625.57263" y="232.08803"
+                    ry="2.3880703" />
+                <rect id="rect3-8-1" class="chip-strip" width="26.458332" height="5.2916665" x="625.57263" y="205.62968"
+                    ry="2.3880703" />
+
+                <path class="circuit-path secondary-path" id="path42"
+                    d="m 615.40231,161.65103 0.11707,71.6622 -38.62526,-0.008" marker-start="url(#ThreeDots)"
+                    marker-end="url(#SemiCircleFilled)" />
+                <path class="circuit-path secondary-path" id="path3-5"
+                    d="m 663.42173,161.56088 0.117,108.46654 -86.72778,0.008" marker-start="url(#ThreeDots-1)"
+                    marker-end="url(#SemiCircleFilled-2)" />
+
+                <circle class="circle-glow-ring" id="circle42" cx="619.35498" cy="326.67654" r="39.6875" />
+                <circle class="circle-glow-ring" id="path4-9" cx="619.35498" cy="326.67654" r="26.458332" />
+                <circle class="circle-glow-dot" id="path4-9-4" cx="619.35498" cy="326.67654" r="7.9375" />
+
+                <ellipse class="circle-glow-ring2" id="path4-3" cx="463.22141" cy="110.95406" rx="19.203629"
+                    ry="19.203627" />
+                <ellipse class="circle-glow-ring2" id="path4-9-41" cx="463.22141" cy="110.95406" rx="12.802418"
+                    ry="12.802419" />
+                <ellipse class="circle-glow-dot2" id="path4-9-4-1" cx="463.22141" cy="110.95406" rx="3.8407257"
+                    ry="3.8407259" />
+
+                <circle class="circle-glow-ring3" id="path4-3-6" cx="294.17465" cy="246.51408" r="16.003025" />
+                <ellipse class="circle-glow-ring3" id="path4-9-41-0" cx="294.17465" cy="246.51408" rx="10.668681"
+                    ry="10.668687" />
+                <ellipse class="circle-glow-dot3" id="path4-9-4-1-1" cx="294.17465" cy="246.51408" rx="3.2006047"
+                    ry="3.2006054" />
+
+                <rect class="chip-small" id="rect6" width="132.29167" height="39.6875" x="136.46754" y="-68.726425"
+                    ry="9.0894632" rx="0" transform="rotate(90)" />
+
+                <path class="decor-icon" id="path120"
+                    d="m 392.51077,213.87623 c 28.7827,0.57547 35.41183,-0.93503 38.35797,0.37439 7.05062,6.64263 4.64529,4.00976 10.30287,5.71288 1.72853,0.53896 3.29698,1.87061 3.6957,3.6957 0.60669,2.60959 -2.1754,5.27579 -4.76567,4.59793 z" />
+                <path class="decor-icon" id="path196"
+                    d="m 161.92282,268.85812 c -0.0927,-19.9064 0.088,-23.0873 0.0321,-25.25892 -0.0695,-2.6998 -0.50472,-1.64982 -2.28561,-3.59787 z" />
+                <path class="decor-icon" id="path120-3"
+                    d="m 257.36707,72.32299 c -0.24323,-0.395574 14.12958,-0.100384 15.64344,1.52692 4.68657,5.037773 -2.07989,9.655194 -7.13609,4.212803 z" />
+                <path class="decor-icon" id="path262"
+                    d="m 342.18909,299.91636 c 2.05396,-0.79031 4.40346,-0.32067 6.11822,1.97062 2.36247,3.24194 -1.12104,6.28544 -2.22223,8.49206 z" />
+                <path class="decor-icon" id="path262-0"
+                    d="m 635.59023,100.72014 c 0.02,2.32092 -0.818,34.84544 1.2748,35.595 1.3206,0.48789 2.5482,0.082 6.4392,0.31459 z" />
+                <path class="decor-icon" id="path263"
+                    d="m 324.83609,304.94889 c -0.55245,-3.82932 4.27382,-6.77201 7.56418,-4.64794 2.34235,1.44701 3.40095,4.2254 1.5621,6.93315 z" />
+                <path class="decor-icon" id="path153"
+                    d="m 415.62726,158.33559 c 3.79228,-1.22714 7.76208,2.73103 5.82613,6.38757 -0.50827,1.15226 -1.38959,2.07539 -2.00925,3.15992 z" />
+
+                <circle class="circuit-hidden" cx="177.03773" cy="88.75798" r="5.2916665" />
+                <circle class="circuit-hidden" cx="196.88148" cy="88.75798" r="5.2916665" />
+                <circle class="circuit-hidden" cx="216.72525" cy="88.75798" r="5.2916665" />
+                <circle class="circuit-hidden" cx="236.569" cy="88.75798" r="5.2916665" />
+                <circle class="circuit-hidden" cx="177.03773" cy="108.60173" r="5.2916665" />
+                <circle class="circuit-hidden" cx="196.88148" cy="108.60173" r="5.2916665" />
+                <circle class="circuit-hidden" cx="216.72525" cy="108.60173" r="5.2916665" />
+                <circle class="circuit-hidden" cx="236.569" cy="108.60173" r="5.2916665" />
+                <circle class="circuit-hidden" cx="177.03773" cy="128.44548" r="5.2916665" />
+                <circle class="circuit-hidden" cx="196.88148" cy="128.44548" r="5.2916665" />
+                <circle class="circuit-hidden" cx="216.72525" cy="128.44548" r="5.2916665" />
+                <circle class="circuit-hidden" cx="236.569" cy="128.44548" r="5.2916665" />
+                <circle class="circuit-hidden" cx="177.03773" cy="148.28925" r="5.2916665" />
+                <circle class="circuit-hidden" cx="196.88148" cy="148.28925" r="5.2916665" />
+                <circle class="circuit-hidden" cx="216.72525" cy="148.28925" r="5.2916665" />
+                <circle class="circuit-hidden" cx="236.569" cy="148.28925" r="5.2916665" />
+
+                <path class="circuit-path main-path" id="path51"
+                    d="m 439.83544,240.28329 h -65.33467 l -20.02152,20.02048 h -19.74963 l -25.62529,25.62738"
+                    marker-start="url(#marker13-1)" marker-end="url(#marker13)" />
+                <path class="circuit-path main-path" id="path67"
+                    d="m 439.83544,255.37797 h -66.42903 l 0.64655,58.81641" marker-start="url(#marker13-1)"
+                    marker-end="url(#marker13)" />
+                <path class="circuit-path secondary-path" id="path138"
+                    d="m 157.95373,160.23604 h 180.48452 l 32.16889,-16.8026 0.0143,-6.73455"
+                    marker-start="url(#marker13)" marker-end="url(#marker8)" />
+                <path class="circuit-path secondary-path" id="path127"
+                    d="m 662.70353,116.51768 c 0.1966,-19.55454 0.1901,-34.138408 0.1244,-53.693616 l -14.1527,-0.163692 -9.1383,-9.039293 -0.069,-22.544733 8.5835,-4.172659 11.5702,-0.0521 15.391,-19.4910717 -0.037,-7.26724998"
+                    marker-start="url(#marker13)" />
+                <path class="circuit-path secondary-path" id="path127-7"
+                    d="m 642.23933,80.671668 -0.096,-6.366408 -0.1006,-10.755598 -7.6589,-8.378295 0.019,-26.385832 12.7287,-5.955095 9.543,0.08304 13.0936,-15.6394947 -0.037,-7.26724998"
+                    marker-start="url(#marker15)" />
+                <path class="circuit-path secondary-path" id="path127-3"
+                    d="m 635.21573,80.247465 -0.098,-6.409144 0.045,-9.302639 -5.23371,-6.682955 -0.002,-31.785316 17.01841,-7.843815 7.8433,0.0435 10.2308,-12.0373507 -0.037,-6.21608998"
+                    marker-start="url(#marker15)" />
+                <path class="circuit-path secondary-path" id="path127-7-5"
+                    d="m 614.89663,117.10955 0.39008,-54.955658 9.29754,-8.514736 0.3377,-30.009118 21.13698,-9.770352 6.294,0.083 7.5115,-8.5284307 0.058,-5.35603998"
+                    marker-start="url(#marker13)" />
+                <path class="circuit-path secondary-path" id="path57"
+                    d="m 152.13949,226.23134 21.61356,-16.05417 91.48197,-0.0464 11.65122,-14.89258 h 32.60989 l 26.33861,-25.30583"
+                    marker-end="url(#ColoredDot)" />
+                <path class="circuit-path secondary-path" id="path58"
+                    d="m 166.81178,203.43854 h 93.50876 l 13.39247,-16.41122 26.73457,-0.19831 12.62523,-12.17194"
+                    marker-start="url(#marker14)" marker-end="url(#marker9)" />
+                <path class="circuit-path secondary-path" id="path148"
+                    d="m 169.25711,230.25823 20.81808,-14.67046 h 80.57628 l 11.46726,-15.67193 34.84912,-0.0538 33.49204,-34.73028"
+                    marker-start="url(#marker13-1)" marker-end="url(#ColoredDot)" />
+                <path class="circuit-path secondary-path" id="path49"
+                    d="m 350.85102,185.63089 19.03701,-0.0894 11.34346,-12.93188 0.99334,-16.75655 8.14434,-12.19862 h 30.86557 l 12.60023,12.06074 16.47137,0.4942 9.26586,14.39796 v 18.89846" />
+                <path class="circuit-path secondary-path" id="path49-0"
+                    d="m 352.08118,191.43495 19.03701,-0.0894 15.26261,-16.85103 0.99334,-16.75655 5.8469,-9.22546 h 26.00043 l 11.51908,11.92559 16.47137,0.4942 6.83328,10.61395 0.13515,23.76361" />
+                <path class="circuit-path secondary-path" id="path43"
+                    d="m 644.45203,116.81213 c 0.1966,-19.554544 0.1902,3.4183 0.1244,-16.13691"
+                    marker-start="url(#marker13)" />
+                <path class="circuit-path secondary-path" id="path3-7"
+                    d="m 421.40976,307.17044 -0.0594,-36.36569 19.60076,0.004" marker-start="url(#ThreeDots-4)"
+                    marker-end="url(#SemiCircleFilled-8)" />
+
+                <path class="circuit-path secondary-path added-path" d="M 40,300 L 40,340 L 120,340 L 120,300" />
+                <path class="circuit-path secondary-path added-path" d="M 250,300 L 250,350 L 340,350" />
+                <path class="circuit-path secondary-path added-path" d="M 450,60 L 450,20 L 550,20 L 550,90" />
+                <path class="circuit-path secondary-path added-path" d="M 560,250 L 600,250 L 600,300" />
+                <path class="circuit-path secondary-path added-path" d="M 100,50 L 100,20 L 250,20" />
+                <path class="circuit-path secondary-path added-path" d="M 300,330 L 300,370 L 500,370" />
+                <path class="circuit-path secondary-path added-path" d="M 560,60 L 610,60 L 610,150" />
+                <path class="circuit-path secondary-path added-path" d="M 20,60 L 20,20 L 80,20" />
+                <path class="circuit-path secondary-path added-path" d="M 20,180 L 60,180 L 60,240 L 90,240" />
+                <path class="circuit-path secondary-path added-path" d="M 540,340 L 540,300 L 470,300" />
+            </g>
+        </svg>
+    </div>
+
+    <div class="glass-layer"></div>
+
+
+
+    <script>
+        (function () {
+            "use strict";
+
+            const svg = document.getElementById("circuitSvg");
+            if (!svg) return;
+
+            const NS = "http://www.w3.org/2000/svg";
+            const ORANGE = "#FF6D00";
+            const RED = "#e2263a";
+
+            /* ---------------------------------------------------------
+               1. Gather targets
+            --------------------------------------------------------- */
+            const mainPaths = Array.from(svg.querySelectorAll("path.circuit-path.main-path"));
+            const secondaryPaths = Array.from(svg.querySelectorAll("path.circuit-path.secondary-path"));
+            const allPaths = mainPaths.concat(secondaryPaths);
+
+            const circleTargets = [
+                { els: ["circle-glow-ring", "circle-glow-dot"], selector: ".circle-glow-ring, .circle-glow-dot" },
+            ];
+
+            // Build orbit-capable circle/ellipse groups (center + radius derived straight from SVG attrs)
+            function collectOrbitGroups(ringSelector, dotSelector) {
+                const rings = Array.from(svg.querySelectorAll(ringSelector));
+                if (!rings.length) return null;
+                const outer = rings[0];
+                const cx = parseFloat(outer.getAttribute("cx"));
+                const cy = parseFloat(outer.getAttribute("cy"));
+                const r = parseFloat(outer.getAttribute("r") || outer.getAttribute("rx"));
+                return { cx, cy, r };
+            }
+
+            const orbitGroups = [
+                collectOrbitGroups(".circle-glow-ring"),
+                collectOrbitGroups(".circle-glow-ring2"),
+                collectOrbitGroups(".circle-glow-ring3"),
+            ].filter(Boolean);
+
+            /* ---------------------------------------------------------
+               2. Path pulse — clone the path, animate a short dash
+                  segment along its length, then discard the clone.
+            --------------------------------------------------------- */
+            function firePathPulse(path) {
+                const isMain = path.classList.contains("main-path");
+                const color = isMain ? ORANGE : RED;
+
+                let length;
+                try {
+                    length = path.getTotalLength();
+                } catch (e) {
+                    return;
+                }
+                if (!length || length < 1) return;
+
+                const dashLength = Math.max(18, Math.min(60, length * 0.18));
+
+                const clone = document.createElementNS(NS, "path");
+                clone.setAttribute("d", path.getAttribute("d"));
+                clone.classList.add("pulse-line");
+                clone.style.stroke = color;
+                clone.style.strokeWidth = isMain ? "2.2" : "1.6";
+                clone.style.strokeDasharray = dashLength + " " + length;
+                clone.style.strokeDashoffset = length;
+                clone.style.filter = "drop-shadow(0 0 6px " + color + ")";
+                clone.style.opacity = "0.95";
+                clone.style.transition = "none";
+
+                svg.appendChild(clone);
+
+                // Force reflow so the browser registers the starting state before transitioning
+                void clone.getBoundingClientRect();
+
+                const duration = 650 + Math.random() * 500; // ms
+                clone.style.transition = "stroke-dashoffset " + duration + "ms linear, opacity " + duration + "ms ease-out";
+
+                requestAnimationFrame(() => {
+                    clone.style.strokeDashoffset = -length;
+                    clone.style.opacity = "0";
+                });
+
+                // Clean up: remove the pulse element completely once it finishes travelling
+                setTimeout(() => {
+                    if (clone.parentNode) clone.parentNode.removeChild(clone);
+                }, duration + 80);
+            }
+
+            /* ---------------------------------------------------------
+               3. Circle / ring pulse — a small orange spark orbiting
+                  the ring using requestAnimationFrame, then removed.
+            --------------------------------------------------------- */
+            function fireCirclePulse(group) {
+                if (!group) return;
+                const { cx, cy, r } = group;
+
+                const spark = document.createElementNS(NS, "circle");
+                spark.classList.add("pulse-spark");
+                spark.setAttribute("r", "3.2");
+                spark.setAttribute("fill", ORANGE);
+                spark.style.filter = "drop-shadow(0 0 6px " + ORANGE + ")";
+                svg.appendChild(spark);
+
+                const startAngle = Math.random() * Math.PI * 2;
+                const loops = 1 + Math.random() * 0.6; // slightly more than one lap
+                const duration = 900 + Math.random() * 500;
+                const start = performance.now();
+
+                function step(now) {
+                    const t = Math.min(1, (now - start) / duration);
+                    const angle = startAngle + t * loops * Math.PI * 2;
+                    const x = cx + r * Math.cos(angle);
+                    const y = cy + r * Math.sin(angle);
+                    spark.setAttribute("cx", x);
+                    spark.setAttribute("cy", y);
+                    spark.style.opacity = String(1 - t * 0.7);
+
+                    if (t < 1) {
+                        requestAnimationFrame(step);
+                    } else if (spark.parentNode) {
+                        spark.parentNode.removeChild(spark);
+                    }
+                }
+                requestAnimationFrame(step);
+            }
+
+            /* ---------------------------------------------------------
+               4. Randomized scheduler
+               - random path chosen each time
+               - random delay between currents
+               - occasional bursts of 3-5 consecutive pulses on the same path
+               - small chance of a circle/ring pulse instead of a path pulse
+            --------------------------------------------------------- */
+            function randomBetween(min, max) {
+                return min + Math.random() * (max - min);
+            }
+
+            function pickRandomPath() {
+                // Bias slightly toward main paths so the CPU feels "alive"
+                const useMain = Math.random() < 0.55 && mainPaths.length;
+                const pool = useMain ? mainPaths : secondaryPaths;
+                if (!pool.length) return allPaths[Math.floor(Math.random() * allPaths.length)];
+                return pool[Math.floor(Math.random() * pool.length)];
+            }
+
+            function pickRandomCircleGroup() {
+                if (!orbitGroups.length) return null;
+                return orbitGroups[Math.floor(Math.random() * orbitGroups.length)];
+            }
+
+            function scheduleNext() {
+                // Realistic irregular timing: sometimes fast, sometimes a long lull
+                const delay = randomBetween(300, 4200) + (Math.random() < 0.15 ? randomBetween(2000, 5000) : 0);
+
+                setTimeout(() => {
+                    const roll = Math.random();
+
+                    if (roll < 0.12) {
+                        // Occasional circle / ring pulse
+                        fireCirclePulse(pickRandomCircleGroup());
+                    } else if (roll < 0.35) {
+                        // Burst: 3-5 consecutive pulses down the same path
+                        const burstPath = pickRandomPath();
+                        const burstCount = 3 + Math.floor(Math.random() * 3); // 3..5
+                        let fired = 0;
+                        function fireBurstStep() {
+                            firePathPulse(burstPath);
+                            fired++;
+                            if (fired < burstCount) {
+                                setTimeout(fireBurstStep, randomBetween(120, 380));
+                            }
+                        }
+                        fireBurstStep();
+                    } else {
+                        // Single pulse on a random path
+                        firePathPulse(pickRandomPath());
+                    }
+
+                    scheduleNext();
+                }, delay);
+            }
+
+            // Kick things off once paths are laid out (getTotalLength needs layout)
+            window.addEventListener("load", () => {
+                // Prime a couple of pulses immediately so the board feels alive on load
+                setTimeout(() => firePathPulse(pickRandomPath()), 200);
+                setTimeout(() => firePathPulse(pickRandomPath()), 900);
+                scheduleNext();
+            });
+        })();
+    </script>
+
+</body>
+
+</html>
