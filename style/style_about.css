@@ -23,7 +23,7 @@
 
 .about-terminal {
     flex: 1 1 460px;
-    /* font-family: "Courier New", monospace; */
+    font-family: "Italiana", sans-serif;
 }
 
 .terminal-block {
@@ -38,7 +38,7 @@
     margin: 0 0 0.75rem;
     color: var(--title-color);
     font-weight: 700;
-    font-size: 1.3rem;
+    font-size: 2rem;
     letter-spacing: 0.3px;
 }
 
@@ -46,7 +46,7 @@
     margin: 0;
     padding-left: 1.6rem;
     color: #D38E4B;
-    font-size: 1.2rem;
+    font-size: 1.35rem;
     line-height: 1.7;
 }
 
@@ -61,7 +61,7 @@
 }
 
 .terminal-string {
-    font-size: 1.2rem;
+    font-size: 1.4rem;
     color: #D38E4B;
 }
 
