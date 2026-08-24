@@ -1,0 +1,189 @@
+/* about – terminal bio + contact card */
+@import url('../assets/constant/color.css');
+
+.about-section {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    padding: 4rem 3rem;
+}
+
+.about-layout {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    align-items: flex-start;
+    gap: 4rem;
+    flex-wrap: wrap;
+}
+
+/* ---- left column: terminal aesthetic ---- */
+
+.about-terminal {
+    flex: 1 1 460px;
+    font-family: "Courier New", monospace;
+}
+
+.terminal-block {
+    margin-bottom: 2.25rem;
+}
+
+.terminal-block:last-child {
+    margin-bottom: 0;
+}
+
+.terminal-label {
+    margin: 0 0 0.75rem;
+    color: var(--title-color);
+    font-weight: 700;
+    font-size: 1.3rem;
+    letter-spacing: 0.3px;
+}
+
+.terminal-value {
+    margin: 0;
+    padding-left: 1.6rem;
+    color: #D38E4B;
+    font-size: 1.05rem;
+    line-height: 1.7;
+}
+
+.terminal-list {
+    margin: 0;
+    padding-left: 1.6rem;
+    color: var(--title-color);
+    font-family: inherit;
+    font-size: 1.02rem;
+    line-height: 1.95;
+    white-space: pre-wrap;
+}
+
+.terminal-string {
+    color: #D38E4B;
+}
+
+/* ---- right column: glassmorphism contact card ---- */
+
+.contact-card {
+    flex: 0 0 380px;
+    max-width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1.5rem;
+    padding: 2.75rem 2.5rem;
+    background: rgba(20, 24, 32, 0.55);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 28px;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4);
+}
+
+.contact-title {
+    margin: 0;
+    text-align: center;
+    font-family: "Courier New", monospace;
+    font-size: 1.9rem;
+    font-weight: 700;
+    color: var(--title-color);
+    letter-spacing: 0.5px;
+}
+
+.contact-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 1.1rem;
+}
+
+.contact-btn {
+    display: block;
+    padding: 1rem 1.5rem;
+    border-radius: 999px;
+    text-align: center;
+    text-decoration: none;
+    font-family: "Courier New", monospace;
+    font-weight: 700;
+    font-size: 0.95rem;
+    color: #f3e6d3;
+    background: var(--button-acc);
+    box-shadow:
+        0 0 0 1px rgba(211, 142, 75, 0.45),
+        0 0 22px rgba(211, 142, 75, 0.35),
+        inset 0 0 14px rgba(211, 142, 75, 0.08);
+    cursor: pointer;
+    transition: box-shadow 0.25s ease, transform 0.25s ease;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.contact-btn:hover {
+    box-shadow:
+        0 0 0 1px rgba(211, 142, 75, 0.65),
+        0 0 32px rgba(211, 142, 75, 0.55),
+        inset 0 0 14px rgba(211, 142, 75, 0.12);
+    transform: translateY(-2px);
+}
+
+/* Download CV: clean dark grey / metallic gradient instead of the glow */
+.contact-btn--cv {
+    color: #e8e8e8;
+    background: linear-gradient(160deg, #3a3f4b 0%, #14171d 65%);
+    box-shadow:
+        0 0 0 1px rgba(255, 255, 255, 0.14),
+        0 10px 22px rgba(0, 0, 0, 0.45),
+        inset 0 0 14px rgba(255, 255, 255, 0.06);
+}
+
+.contact-btn--cv:hover {
+    box-shadow:
+        0 0 0 1px rgba(255, 255, 255, 0.22),
+        0 12px 28px rgba(0, 0, 0, 0.55),
+        inset 0 0 14px rgba(255, 255, 255, 0.09);
+}
+
+/* ---- responsive ---- */
+@media (max-width: 900px) {
+    .about-layout {
+        flex-direction: column;
+        gap: 3rem;
+    }
+
+    .contact-card {
+        flex-basis: auto;
+        width: 100%;
+        max-width: 460px;
+        margin: 0 auto;
+    }
+}
+
+@media (max-width: 480px) {
+    .about-section {
+        padding: 2.5rem 1.25rem;
+    }
+
+    .terminal-label {
+        font-size: 1.1rem;
+    }
+
+    .terminal-value,
+    .terminal-list {
+        font-size: 0.95rem;
+        padding-left: 1.25rem;
+    }
+
+    .contact-card {
+        padding: 2rem 1.5rem;
+    }
+
+    .contact-title {
+        font-size: 1.6rem;
+    }
+
+    .contact-btn {
+        font-size: 0.85rem;
+        padding: 0.9rem 1.1rem;
+    }
+}

@@ -1,0 +1,36 @@
+/* variables.css */
+:root {
+    /* text */
+    --title-color: #F8FAFC;
+    --des-color: #d38e4b;
+    --muted-color: #9aa0ab;
+
+    /* button */
+    --button-txt: #FFF6EE;
+    --button-hid: rgba(217, 217, 217, 0.2);
+    --button-hid-hiv: rgba(217, 217, 217, 0.2);
+    --button-hid-bar: rgba(255, 255, 255, 0.15);
+    --button-acc: linear-gradient(135deg, #834804 16%, #F58606 80%, #FF8B06 100%);
+    --button-acc-bar: linear-gradient(135deg, #6C3500 16%, #A45100 57%, #D26700 100%);
+
+    /* surfaces */
+    --panel-bg: rgba(13, 17, 23, 0.4);
+    --panel-border: rgba(255, 255, 255, 0.08);
+    --card-bg: rgba(255, 255, 255, 0.04);
+    --card-bg-hover: rgba(255, 255, 255, 0.07);
+    --card-border: rgba(255, 255, 255, 0.1);
+
+    /* tags / chips */
+    --tag-bg: rgba(255, 255, 255, 0.06);
+    --tag-border: rgba(255, 255, 255, 0.14);
+    --tag-txt: #d8dbe2;
+
+    /* source / github button */
+    --source-bg: #12161f;
+    --source-bg-hover: #191f2c;
+    --source-border: rgba(255, 255, 255, 0.14);
+    
+    
+    --icon-tint: #A18C62;
+        
+}

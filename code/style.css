@@ -1,0 +1,228 @@
+* {
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+html,
+body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+    background: #090D16;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    color: #fff;
+}
+
+img {
+    max-width: 100%;
+}
+
+section {
+    scroll-margin-top: 1rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    html {
+        scroll-behavior: auto;
+    }
+}
+
+/* Header */
+
+.top-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.25rem 2.5rem;
+    background: rgba(9, 13, 22, 0.55);
+    backdrop-filter: blur(10px);
+    transform: translateY(0);
+    transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), background 0.3s ease;
+}
+
+/* swipe/scroll down hides it, swipe/scroll up brings it back */
+.top-bar.header-hidden {
+    transform: translateY(-110%);
+}
+
+/* space reserved so the fixed header never overlaps the hero on load */
+main {
+    padding-top: var(--header-height, 82px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .top-bar {
+        transition: none;
+    }
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+}
+
+.logo-icon {
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transform: rotate(45deg);
+    /* border: 1.5px solid #ffffff; */
+    border-radius: 8px;
+    font-family: "Brush Script MT", cursive;
+    font-size: 0.85rem;
+    color: #fff;
+}
+
+.logo-icon span {
+    transform: rotate(-45deg);
+}
+
+.logo-text {
+    font-size: 1.6rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    color: #fff;
+}
+
+.nav-links {
+    display: flex;
+    gap: 0.75rem;
+}
+
+.nav-pill {
+    padding: 0.6rem 1.4rem;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    color: #e8e8e8;
+    text-decoration: none;
+    font-size: 0.95rem;
+    font-weight: 500;
+    transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.nav-pill:hover {
+    background: rgba(255, 255, 255, 0.12);
+}
+
+.nav-pill.active {
+    background: rgba(255, 255, 255, 0.14);
+    border-color: rgba(255, 255, 255, 0.25);
+}
+
+/* ---- header responsive ---- */
+
+@media (max-width: 720px) {
+    .top-bar {
+        padding: 1rem 1.5rem;
+    }
+
+    .logo-icon {
+        width: 42px;
+        height: 42px;
+    }
+
+    .logo-text {
+        font-size: 1.3rem;
+    }
+
+    .nav-links {
+        gap: 0.5rem;
+    }
+
+    .nav-pill {
+        padding: 0.5rem 1rem;
+        font-size: 0.85rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .top-bar {
+        padding: 0.85rem 1rem;
+    }
+
+    .logo {
+        gap: 0.6rem;
+    }
+
+    .logo-icon {
+        width: 36px;
+        height: 36px;
+    }
+
+    .nav-links {
+        gap: 0.35rem;
+    }
+
+    .nav-pill {
+        padding: 0.45rem 0.75rem;
+        font-size: 0.78rem;
+    }
+}
+
+@media (max-width: 380px) {
+    .logo-text {
+        display: none;
+    }
+
+    .nav-pill {
+        padding: 0.4rem 0.6rem;
+        font-size: 0.72rem;
+    }
+}
+
+/* ---------------------------------------------------------------
+   Real icon assets: every icon slot (button icons, floating tech
+   icons, project-card thumbnails, etc.) must contain the image at
+   the SLOT's size, never the image's own native/intrinsic size.
+   --------------------------------------------------------------- */
+
+.icon-slot,
+.floating-icon,
+.project-card-icon,
+.logo-icon {
+    overflow: hidden;
+    box-sizing: border-box;
+}
+
+.icon-slot {
+    padding: 3px;
+}
+
+.project-card-icon {
+    padding: 6px;
+}
+
+.logo-icon {
+    padding: 1px;
+}
+
+
+.icon-slot img,
+.floating-icon img,
+.project-card-icon img,
+.logo-icon img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
+
+.project-card-icon img {
+    border-radius: 50%;
+}
