@@ -23,7 +23,7 @@
 
 .about-terminal {
     flex: 1 1 460px;
-    font-family: "Courier New", monospace;
+    /* font-family: "Courier New", monospace; */
 }
 
 .terminal-block {
